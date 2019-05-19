@@ -1,0 +1,11 @@
+name: mask-rcnn-coco
+dependencies:
+- cython
+- numpy 
+- scipy
+- Pillow
+- matplotlib
+- scikit-image
+- tensorflow-gpu
+- keras
+- opencv
