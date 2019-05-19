@@ -9,3 +9,4 @@ dependencies:
 - tensorflow-gpu
 - keras
 - opencv
+- inflection
