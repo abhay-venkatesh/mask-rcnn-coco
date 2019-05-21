@@ -1,15 +1,15 @@
 from lib.datasets.coco import CocoDataset
 from lib.agents.agent import Agent
-from lib.mask_rcnn.model import MaskRCNN
+from lib.mrcnn.model import MaskRCNN
 
 
-class COCOStuffEvaluator(Agent):
+class COCOStuffValidator(Agent):
     YEAR = 2017
     LEN_DATASET = 21000
 
     def run(self):
         dataset_val = CocoDataset()
-        val_type = "val" if self.YEAR in '2017' else "minival"
+        val_type = "val"
         coco = dataset_val.load_coco(
             self.config["dataset path"],
             val_type,

@@ -1,4 +1,4 @@
-from lib.mask_rcnn import utils
+from lib.mrcnn import utils
 from pycocotools import mask as maskUtils
 from pycocotools.coco import COCO
 import numpy as np
