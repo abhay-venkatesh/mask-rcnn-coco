@@ -61,7 +61,6 @@ class COCOStuffValidator(Agent):
                 r["scores"], r["masks"].astype(np.uint8))
             image_results = self._cast(image_results)
             results.extend(image_results)
-            break
 
         with open(
                 Path(self.config["outputs folder"], "coco_result.json"),
