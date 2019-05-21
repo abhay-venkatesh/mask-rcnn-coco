@@ -73,5 +73,6 @@ class COCOStuffValidator(Agent):
         for result in image_results:
             result_ = result
             result_["bbox"] = [int(i) for i in result["bbox"]]
+            result_["score"] = float(result["score"])
             image_results_.append(result_)
         return image_results_
