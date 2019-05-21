@@ -2,6 +2,7 @@ from lib.agents.agent import Agent
 from lib.datasets.coco import CocoDataset
 from lib.mrcnn import coco_eval
 from lib.mrcnn.model import MaskRCNN
+from tqdm import tqdm
 import numpy as np
 import time
 
@@ -48,7 +49,7 @@ class COCOStuffValidator(Agent):
         t_start = time.time()
 
         results = []
-        for i, image_id in enumerate(image_ids):
+        for i, image_id in tqdm(enumerate(image_ids)):
             # Load images
             image = dataset.load_image(image_id)
 
@@ -62,6 +63,7 @@ class COCOStuffValidator(Agent):
             image_results = coco_eval.build_coco_results(
                 dataset, coco_image_ids[i:i + 1], r["rois"], r["class_ids"],
                 r["scores"], r["masks"].astype(np.uint8))
+            print(image_results)
             results.extend(image_results)
 
         # Load results. This modifies results with additional attributes.
