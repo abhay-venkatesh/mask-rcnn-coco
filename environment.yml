@@ -11,3 +11,4 @@ dependencies:
 - opencv
 - inflection
 - tqdm
+- simplejson

@@ -2,9 +2,10 @@ from lib.agents.agent import Agent
 from lib.datasets.coco import CocoDataset
 from lib.mrcnn import coco_eval
 from lib.mrcnn.model import MaskRCNN
+from pathlib import Path
 from tqdm import tqdm
 import numpy as np
-import time
+import simplejson as json
 
 
 class InferenceConfig(coco_eval.CocoConfig):
@@ -45,33 +46,32 @@ class COCOStuffValidator(Agent):
         # Get corresponding COCO image IDs.
         coco_image_ids = [dataset.image_info[id]["id"] for id in image_ids]
 
-        t_prediction = 0
-        t_start = time.time()
-
         results = []
         for i, image_id in tqdm(enumerate(image_ids)):
             # Load images
             image = dataset.load_image(image_id)
 
             # Run detection
-            t = time.time()
             r = model.detect([image], verbose=0)[0]
-            t_prediction += (time.time() - t)
 
             # Convert results to COCO format
             # Cast masks to uint8 because COCO tools errors out on bool
             image_results = coco_eval.build_coco_results(
                 dataset, coco_image_ids[i:i + 1], r["rois"], r["class_ids"],
                 r["scores"], r["masks"].astype(np.uint8))
-            print(image_results)
+            image_results = self._cast(image_results)
             results.extend(image_results)
+            break
 
-        # Load results. This modifies results with additional attributes.
-        coco_results = coco.loadRes(results)
+        with open(
+                Path(self.config["outputs folder"], "coco_result.json"),
+                "w+") as f:
+            json.dump(results, f)
 
-        print("Prediction time: {}. Average {}/image".format(
-            t_prediction, t_prediction / len(image_ids)))
-
-        print("Total time: ", time.time() - t_start)
-
-        return coco_results
+    def _cast(self, image_results):
+        image_results_ = []
+        for result in image_results:
+            result_ = result
+            result_["bbox"] = [int(i) for i in result["bbox"]]
+            image_results_.append(result_)
+        return image_results_
